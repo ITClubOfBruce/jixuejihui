@@ -35,7 +35,10 @@ INSTALLED_APPS = [
 ]
 # 使用自定义的user类
 AUTH_USER_MODEL = 'users.UserProfile'
-
+# 自定义可以通过 邮箱或（or）mobile登录
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
