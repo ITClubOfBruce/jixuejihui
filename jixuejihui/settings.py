@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'operation',
     'xadmin',
     'crispy_forms',
-    'corsheaders'
+    'corsheaders',
+    'captcha'
 ]
 # 使用自定义的user类
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -84,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bwonline_db',        #数据库名字
         'USER': 'root',          #账号
-        'PASSWORD': '123456',      #密码
+        'PASSWORD': '12345678',      #密码
         'HOST': '127.0.0.1',    #IP
         'PORT': '3306',                   #端口
     }

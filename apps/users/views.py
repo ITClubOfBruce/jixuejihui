@@ -1,5 +1,7 @@
 import json
 
+from django.contrib.auth.hashers import make_password
+from utils.email_send import send_register_email
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -47,6 +49,11 @@ class CustomBackend(ModelBackend):
 #         return JsonResponse(resp)
 #         # return HttpResponse(json.dumps(resp),content_type='appication/json')
 
+#  FBV的登出,模板中的登出
+def logout_view(request):
+    logout(request)
+    return render(request,'login.html')
+
 from django.views.generic.base import View
 from .forms import LoginForm
 
@@ -69,6 +76,41 @@ class LoginView(View):
                 return render(request,'login.html',{'msg':'用户名或者密码错误','login_form':login_form})
         else:
             return render(request,'login.html',{'login_form':login_form})
+
+
+'''
+    注册
+'''
+from .forms import RegisterForm
+
+class RegisterView(View):
+    def get(self,request):
+        register_form = RegisterForm()
+        return render(request,'register.html',{'register_form':register_form})
+
+    def post(self,request):
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            username = request.POST.get('email')
+            # 如果邮箱已经注册过了，就不允许注册了
+            if UserProfile.objects.filter(email=username):
+                return render(request,'register.html',{'register_form':register_form,'msg':'用户已经存在'})
+            password = request.POST.get('password')
+
+            user = UserProfile()
+            user.username = username
+            user.email = username
+            user.is_active = False
+
+            # 对密码进行加密
+            user.password = make_password(password)
+            user.save()
+            # 发送邮件
+            send_register_email(username,'register')
+
+            return render(request,'login.html')
+        else:
+            return render(request,'register.html',{'register_form':register_form})
 
 
 
