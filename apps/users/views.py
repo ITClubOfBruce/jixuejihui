@@ -48,22 +48,27 @@ class CustomBackend(ModelBackend):
 #         # return HttpResponse(json.dumps(resp),content_type='appication/json')
 
 from django.views.generic.base import View
+from .forms import LoginForm
 
 class LoginView(View):
     def get(self,request):
         return render(request,'login.html')
 
     def post(self,request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
 
-        user = authenticate(username=username,password=password)
+            user = authenticate(username=username,password=password)
 
-        if user is not None:
-            login(request,user)
-            return render(request,'index.html')
+            if user is not None:
+                login(request,user)
+                return render(request,'index.html')
+            else:
+                return render(request,'login.html',{'msg':'用户名或者密码错误','login_form':login_form})
         else:
-            return render(request,'login.html')
+            return render(request,'login.html',{'login_form':login_form})
 
 
 
