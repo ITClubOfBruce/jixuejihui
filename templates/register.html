@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
-    <title>慕学在线注册</title>
+    <title>即学即会IT课注册</title>
     <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
     <link rel="stylesheet" type="text/css" href="/static/css/login.css">
 
@@ -13,7 +13,7 @@
 <body>
 <div class="loginbox dialogbox">
     <h1>账号登录</h1>
-    <div class="close jsCloseDialog"><img src="/static/images/dig_close.png"/></div>
+    <div class="close jsCloseDialog"><img src="../images/dig_close.png"/></div>
     <div class="cont">
         <form id="jsLoginForm" autocomplete="off">
             <div class="box">
@@ -42,7 +42,7 @@
     <!--提示弹出框-->
     <div class="successbox dialogbox" id="jsSuccessTips">
         <h1>成功提交</h1>
-        <div class="close jsCloseDialog"><img src="/static/images/dig_close.png"/></div>
+        <div class="close jsCloseDialog"><img src="../images/dig_close.png"/></div>
         <div class="cont">
             <h2>您的需求提交成功！</h2>
             <p></p>
@@ -50,9 +50,9 @@
     </div>
     <div  class="noactivebox dialogbox" id="jsUnactiveForm" >
         <h1>邮件验证提示</h1>
-        <div class="close jsCloseDialog"><img src="/static/images/dig_close.png"/></div>
+        <div class="close jsCloseDialog"><img src="../images/dig_close.png"/></div>
         <div class="center">
-            <img src="/static/images/send.png"/>
+            <img src="../images/send.png"/>
             <p>我们已经向您的邮箱<span class="green" id="jsEmailToActive">12@13.com</span>发送了邮件，<br/>为保证您的账号安全，请及时验证邮箱</p>
             <p class="a"><a class="btn" id="jsGoToEmail" target="_blank" href="http://mail.qq.com">去邮箱验证</a></p>
             <p class="zy_success upmove"></p>
@@ -133,27 +133,32 @@
                     <!--</form>-->
                 <!--</div>-->
                 <div class="tab-form">
-                    <form id="email_register_form" method="post" action="register.html" autocomplete="off">
-                        <input type='hidden' name='csrfmiddlewaretoken' value='gTZljXgnpvxn0fKZ1XkWrM1PrCGSjiCZ' />
-                        <div class="form-group marb20 ">
+                    <form id="email_register_form" method="post" action="{% url 'register' %}" autocomplete="off">
+                        <input type='hidden' name='csrfmiddlewaretoken' value='bZHbQOWVPymBhqAuNss2Z16sqwGO' />
+                        <div class="form-group marb20 {% if login_form.errors.email %} errorput {% endif %} ">
                             <label>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱</label>
-                            <input  type="text" id="id_email" name="email" value="None" placeholder="请输入您的邮箱地址" />
+                            <input  type="text" id="id_email" name="email" value="{{ register_form.email.value }}" placeholder="请输入您的邮箱地址" />
                         </div>
-                        <div class="form-group marb8 ">
+                        <div class="form-group marb8 {% if login_form.errors.password %} errorput {% endif %}">
                             <label>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码</label>
-                            <input type="password" id="id_password" name="password"  value="None" placeholder="请输入6-20位非中文字符密码" />
+                            <input type="password" id="id_password" name="password"  value="{{ register_form.password.value }}" placeholder="请输入6-20位非中文字符密码" />
                         </div>
-                        <div class="form-group marb8 captcha1 ">
+                        <div class="form-group marb8 captcha1 {% if login_form.errors.captcha %} errorput {% endif %}">
                             <label>验&nbsp;证&nbsp;码</label>
                             {{ register_form.captcha }}
-                            <input id="id_captcha_0" name="captcha_0" type="hidden" value="2f3f82e5f7a054bf5caa93b9b0bb6cc308fb7011" />
-                            <input autocomplete="off" id="id_captcha_1" name="captcha_1" type="text" />
                         </div>
-                        <div class="error btns" id="jsEmailTips"></div>
+                        <div class="error btns" id="jsEmailTips">
+                            {% for key,error in register_form.errors.items  %}
+                                {{ error }}
+                            {% endfor %}
+                            {{ msg }}
+
+                        </div>
                         <div class="auto-box marb8">
                         </div>
                         <input class="btn btn-green" id="jsEmailRegBtn" type="submit" value="注册并登录" />
-                    <input type='hidden' name='csrfmiddlewaretoken' value='5I2SlleZJOMUX9QbwYLUIAOshdrdpRcy' />
+                    <input type='hidden' name='csrfmiddlewaretoken' value='MHAoqTJ2TbWPgXtzqLVsph3tDMOYM1T68yA4' />
+                    {% csrf_token %}
                     </form>
                 </div>
                 <p class="form-p">已有账号？<a href="login.html">[立即登录]</a></p>

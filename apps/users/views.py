@@ -70,8 +70,11 @@ class LoginView(View):
             user = authenticate(username=username,password=password)
 
             if user is not None:
-                login(request,user)
-                return render(request,'index.html')
+                if user.is_active:
+                    login(request,user)
+                    return render(request,'index.html')
+                else:
+                    return render(request, 'login.html', {'msg': '用户名或者密码错误', 'login_form': login_form})
             else:
                 return render(request,'login.html',{'msg':'用户名或者密码错误','login_form':login_form})
         else:
@@ -113,7 +116,23 @@ class RegisterView(View):
             return render(request,'register.html',{'register_form':register_form})
 
 
-
+'''
+    激活账号
+'''
+from .models import EmailVerifyRecord
+class ActiveUserView(View):
+    def get(self,request,active_code):
+        # 查询邮箱验证记录类中是否存在active_code
+        all_code = EmailVerifyRecord.objects.filter(code=active_code)
+        if all_code:
+            for record in all_code:
+                email = record.email
+                user = UserProfile.objects.get(email=email)
+                user.is_active = True
+                user.save()
+        else:
+            return render(request,'active_fail_html')
+        return render(request,'login.html')
 
 
 
