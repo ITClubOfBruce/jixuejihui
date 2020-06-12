@@ -52,14 +52,14 @@ class CustomBackend(ModelBackend):
 #  FBV的登出,模板中的登出
 def logout_view(request):
     logout(request)
-    return render(request,'login.html')
+    return render(request,'users/login.html')
 
 from django.views.generic.base import View
 from .forms import LoginForm
 
 class LoginView(View):
     def get(self,request):
-        return render(request,'login.html')
+        return render(request,'users/login.html')
 
     def post(self,request):
         login_form = LoginForm(request.POST)
@@ -74,11 +74,11 @@ class LoginView(View):
                     login(request,user)
                     return render(request,'index.html')
                 else:
-                    return render(request, 'login.html', {'msg': '用户名或者密码错误', 'login_form': login_form})
+                    return render(request, 'users/login.html', {'msg': '用户名或者密码错误', 'login_form': login_form})
             else:
-                return render(request,'login.html',{'msg':'用户名或者密码错误','login_form':login_form})
+                return render(request,'users/login.html',{'msg':'用户名或者密码错误','login_form':login_form})
         else:
-            return render(request,'login.html',{'login_form':login_form})
+            return render(request,'users/login.html',{'login_form':login_form})
 
 
 '''
@@ -89,7 +89,7 @@ from .forms import RegisterForm
 class RegisterView(View):
     def get(self,request):
         register_form = RegisterForm()
-        return render(request,'register.html',{'register_form':register_form})
+        return render(request,'users/register.html',{'register_form':register_form})
 
     def post(self,request):
         register_form = RegisterForm(request.POST)
@@ -97,7 +97,7 @@ class RegisterView(View):
             username = request.POST.get('email')
             # 如果邮箱已经注册过了，就不允许注册了
             if UserProfile.objects.filter(email=username):
-                return render(request,'register.html',{'register_form':register_form,'msg':'用户已经存在'})
+                return render(request,'users/register.html',{'register_form':register_form,'msg':'用户已经存在'})
             password = request.POST.get('password')
 
             user = UserProfile()
@@ -111,9 +111,9 @@ class RegisterView(View):
             # 发送邮件
             send_register_email(username,'register')
 
-            return render(request,'login.html')
+            return render(request,'users/login.html')
         else:
-            return render(request,'register.html',{'register_form':register_form})
+            return render(request,'users/register.html',{'register_form':register_form})
 
 
 '''
@@ -131,14 +131,70 @@ class ActiveUserView(View):
                 user.is_active = True
                 user.save()
         else:
-            return render(request,'active_fail_html')
-        return render(request,'login.html')
+            return render(request,'users/active_fail.html')
+        return render(request,'users/login.html')
 
 
+'''
+    找回密码
+'''
+from .forms import ForgetPwdForm
+
+class ForgetPwdView(View):
+    def get(self,request):
+        forget_form = ForgetPwdForm()
+        return render(request,'users/forgetpwd.html',{"forget_form":forget_form})
+
+    def post(self,request):
+        forget_form = ForgetPwdForm(request.POST)
+        if forget_form.is_valid():
+            email = request.POST.get('email')
+            send_register_email(email,"forget")
+            return render(request,'users/send_success.html')
+        else:
+            return render(request,'users/forgetpwd.html',{"forget_form":forget_form})
+
+'''
+    处理重置密码的链接
+    http://127.0.0.1:8000/reset/CFX7dWE77nnOFlqA
+'''
+class ResetPwdView(View):
+    def get(self,request,active_code):
+        all_records = EmailVerifyRecord.objects.filter(code=active_code)
+        if all_records:
+            for record in all_records:
+                email = record.email
+                return render(request,"users/password_reset.html",{'email':email})
+        else:
+            return render(request,'users/active_fail.html')
+
+        return render(request,"users/login.html")
 
 
+'''
+    重置密码
+'''
+from .forms import ModifyPwdForm
 
+class ModifyPwdView(View):
+    def post(self,request):
+        modify_form = ModifyPwdForm(request.POST)
+        print(modify_form.is_valid())
+        if modify_form.is_valid():
+            pwd1 = request.POST.get("password1")
+            pwd2 = request.POST.get("password2")
+            email = request.POST.get("email")
 
+            if pwd1 != pwd2:
+                return render(request,"users/password_reset.html",{"email":email,"msg":"两次输入的密码不一致"})
+
+            user = UserProfile.objects.get(email=email)
+            user.password = make_password(pwd2)
+            user.save()
+            return render(request,'users/login.html')
+        else:
+            email = request.POST.get('email')
+            return render(request,'users/password_reset.html',{"email":email,"modify_form":modify_form})
 
 
 
