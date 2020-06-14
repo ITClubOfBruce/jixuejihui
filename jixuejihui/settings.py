@@ -133,12 +133,19 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),
 )
 
+# 设置文件上传路径
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+
 EMAIL_HOST = "smtp.qq.com"
 EMAIL_PORT = 25
 EMAIL_HOST_USER  = "1046244623@qq.com"
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_PASSWORD = "qucjfwnyidpobbaj"
 EMAIL_USE_TLS = True
 EMAIL_FROM = "1046244623@qq.com"
+
+
 
 
 

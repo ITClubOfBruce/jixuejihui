@@ -23,8 +23,8 @@ class ForgetPwdForm(forms.Form):
 
 # 重置密码的表单验证
 class ModifyPwdForm(forms.Form):
-    password1 = forms.CharField(required=True,min_length=6)
-    password2 = forms.CharField(required=True,min_length=6)
+    password1 = forms.CharField(required=True,min_length=6,max_length=20)
+    password2 = forms.CharField(required=True,min_length=6,max_length=20)
 
 
 

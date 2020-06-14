@@ -1,9 +1,7 @@
 # organization/adminx.py
 
 import xadmin
-
 from .models import CityDict, CourseOrg, Teacher
-
 
 class CityDictAdmin(object):
     '''城市'''
@@ -19,7 +17,7 @@ class CourseOrgAdmin(object):
     list_display = ['name', 'desc', 'click_nums', 'fav_nums', 'add_time']
     search_fields = ['name', 'desc', 'click_nums', 'fav_nums']
     list_filter = ['name', 'desc', 'click_nums', 'fav_nums', 'city__name', 'address', 'add_time']
-
+    model_icon = 'fa fa-sitemap'
 
 class TeacherAdmin(object):
     '''老师'''

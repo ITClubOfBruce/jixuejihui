@@ -2,6 +2,7 @@ import xadmin
 from xadmin import views
 from .models import EmailVerifyRecord,Banner
 
+
 # 创建xadmin的最基本管理器配置，并与view绑定
 class BaseSetting(object):
     # 开启主题功能
@@ -30,6 +31,7 @@ class EmailVerifyRecordAdmin(object):
     search_fields = ['code', 'email', 'send_type']
     # 过滤
     list_filter = ['code', 'email', 'send_type', 'send_time']
+    model_icon = 'fa fa-envelope'
 
 xadmin.site.register(EmailVerifyRecord,EmailVerifyRecordAdmin)
 
