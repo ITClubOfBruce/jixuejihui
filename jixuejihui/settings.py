@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'corsheaders',
-    'captcha'
+    'captcha',
+    'pure_pagination'
 ]
 # 使用自定义的user类
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -48,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 # CORS
 CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:5500']  # 配置IP白名单
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media'
             ],
         },
     },
