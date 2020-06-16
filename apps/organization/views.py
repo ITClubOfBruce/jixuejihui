@@ -52,8 +52,7 @@ class OrgView(View):
 
 # 处理我要咨询的请求的视图
 from .forms import UserAskForm
-from operation.models import UserAsk
-
+from django.http import HttpResponse
 class UserAskView(View):
     '''
     用户咨询
@@ -61,8 +60,36 @@ class UserAskView(View):
     def post(self,request):
         userask_form = UserAskForm(request.POST)
         if userask_form.is_valid():
-            user_ask = UserAsk()
-            user_ask.name = request.POST.get('name')
-            user_ask.mobile = request.POST.get('mobile')
-            user_ask.course_name = request.POST.get('course_name')
-            user_ask.save()
+            user_ask = userask_form.save(commit=True)
+
+            return HttpResponse('{"status":"success"}')
+        else:
+            return HttpResponse('{"status":"fail","msg":"添加失败"}')
+
+
+
+# org-detail-home
+class OrgDetailHomeView(View):
+    def get(self,request,org_id):
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        # 反向查询到课程机构中的所有课程和讲师
+        all_courses = course_org.course_set.all()[:4]
+        all_teacher = course_org.teacher_set.all()[:2]
+        context = {
+            "course_org":course_org,
+            "all_courses":all_courses,
+            "all_teacher":all_teacher
+        }
+        return render(request,'organization/org-detail-homepage.html',context)
+
+
+
+
+
+
+
+
+
+
+
+

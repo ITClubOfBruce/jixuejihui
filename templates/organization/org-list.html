@@ -55,13 +55,13 @@
                 {% for course_org in all_orgs.object_list %}
                     <dl class="des difdes">
                         <dt>
-                            <a href="org-detail-homepage.html">
+                            <a href="{% url 'org:org_home' course_org.id %}">
                                 <img width="200" height="120" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ course_org.image }}"/>
                             </a>
                         </dt>
                         <dd>
                             <div class="clearfix">
-                                 <a href="org-detail-homepage.html">
+                                 <a href="{% url 'org:org_home' course_org.id%}">
                                      <h1>{{ course_org.name }}</h1>
                                      <div class="pic fl">
 
@@ -113,7 +113,7 @@
         </div>
         <div class="right companyright">
                 <div class="head">我要学习</div>
-                <form class="rightform" id="jsStayForm" action="/org/add_ask/" method="post">
+                <form class="rightform" id="jsStayForm">
                     <div>
                         <img src="{% static 'images/rightform1.png' %}"/>
                         <input type="text" name="name" id="companyName" placeholder="名字" maxlength="25" />
@@ -127,7 +127,7 @@
                         <input type="text" name="course_name" id="companyAddress" placeholder="课程名" maxlength="50" />
                     </div>
                     <p class="error company-tips" id="jsCompanyTips"></p>
-                    <input class="btn" type="submit" id="jsStayBtn" value="立即咨询 >" />
+                    <input class="btn" type="text" id="jsStayBtn" value="立即咨询 >" />
                 <input type='hidden' name='csrfmiddlewaretoken' value='zHvWdFhNX7zAV9a7WnPLA9iQMPF51htoV5jwXjzhK82aaWDtQc268hDVN98HZVas' />
                 {% csrf_token %}
                 </form>
@@ -147,4 +147,28 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(function () {
+            $('#jsStayBtn').on("click",function () {
+                $.ajax({
+                    cache:false,
+                    type:"POST",
+                    url:"{% url "org:add_ask" %}",
+                    data:$('#jsStayForm').serialize(),
+                    async:true,
+                    dataType:'json',
+                    success:function (data) {
+                        console.log(data.status)
+                        if (data.status == 'success'){
+                            alert("提交成功")
+                            $('#jsStayForm')[0].reset()
+                        }else if(data.status == 'fail'){
+                            $('#jsCompanyTips').html(data.msg)
+                        }
+                    }
+                })
+            })
+        })
+    </script>
 {% endblock %}
