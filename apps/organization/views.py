@@ -71,6 +71,7 @@ class UserAskView(View):
 # org-detail-home
 class OrgDetailHomeView(View):
     def get(self,request,org_id):
+        current_page = 'home'
         course_org = CourseOrg.objects.get(id=int(org_id))
         # 反向查询到课程机构中的所有课程和讲师
         all_courses = course_org.course_set.all()[:4]
@@ -78,15 +79,38 @@ class OrgDetailHomeView(View):
         context = {
             "course_org":course_org,
             "all_courses":all_courses,
-            "all_teacher":all_teacher
+            "all_teacher":all_teacher,
+            'current_page':current_page
         }
         return render(request,'organization/org-detail-homepage.html',context)
 
+# org-detail-course
+class OrgDetailCourseView(View):
+    def get(self,request,org_id):
+        current_page = 'course'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        # 同过课程机构找到课程,内建的一个变量，找到指向这个字段的外键引用
+        all_courses = course_org.course_set.all()
+        context = {
+            'course_org':course_org,
+            'all_courses':all_courses,
+            'current_page':current_page
+        }
+        return render(request,'organization/org-detail-course.html',context)
 
 
+# org-detail-desc
+class OrgDescDetailView(View):
+    '''机构介绍页'''
 
-
-
+    def get(self, request, org_id):
+        current_page = 'desc'
+        # 根据id取到课程机构
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        return render(request, 'organization/org-detail-desc.html', {
+            'course_org': course_org,
+            'current_page': current_page,
+        })
 
 
 

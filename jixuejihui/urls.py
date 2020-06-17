@@ -18,5 +18,7 @@ urlpatterns = [
     re_path('reset/(?P<active_code>.*)/',ResetPwdView.as_view(),name='reset_pwd'),
     path('modify_pwd/',ModifyPwdView.as_view(),name='modify_pwd'),
     re_path('media/(?P<path>.*)',serve,{'document_root':MEDIA_ROOT}),
-    path('org/',include('organization.urls',namespace="org"))
+    path('org/',include('organization.urls',namespace="org")),
+    path('course/',include('course.urls',namespace="course")),
+    # path('users/',include('users.urls',namespace="users")),
 ]
