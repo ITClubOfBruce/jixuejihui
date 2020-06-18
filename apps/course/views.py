@@ -31,19 +31,64 @@ class CourseListView(View):
         return render(request,'course/course-list.html',context)
 
 
-
 class CourseDetailView(View):
     def get(self,request,course_id):
         course = Course.objects.get(id=int(course_id))
+
+        # 设置课程点击数+1
+        course.click_nums += 1
+        course.save()
+
+        tag = course.tag
+        if tag:
+            relate_courses = Course.objects.filter(tag=tag)[:3]
+        else:
+            relate_courses = []
+
         context = {
             "course":course,
+            "relate_courses":relate_courses
         }
-        return render(request,'course/course-detail.html')
+        return render(request,'course/course-detail.html',context)
 
 
+from .models import CourseResource
+
+class CourseInfoView(View):
+    def get(self,request,course_id):
+        course = Course.objects.get(id=int(course_id))
+        all_resourses = CourseResource.objects.filter(course=course)
+        context = {
+            "course":course,
+            "all_resourses":all_resourses
+        }
+        return render(request,'course/course-video.html',context)
+
+# 课程评论
+from operation.models import CourseComments
+
+class CourseCommentsView(View):
+    def get(self,request,course_id):
+        course = Course.objects.get(id=int(course_id))
+        all_resourses = CourseResource.objects.filter(course=course)
+        all_comments = CourseComments.objects.filter(course=course)
+
+        context = {
+            'course':course,
+            "all_resourses": all_resourses,
+            "all_comments":all_comments
+        }
+        return render(request,"course/course-comment.html",context)
 
 
-
+from .models import Video
+class VideoPlayView(View):
+    def get(self,request,video_id):
+        video = Video.objects.get(id=int(video_id))
+        context = {
+            'video':video
+        }
+        return render(request,'course/course-play.html',context)
 
 
 
