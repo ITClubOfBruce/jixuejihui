@@ -80,10 +80,10 @@
                         <ul class="video">
                             {% for video in lesson.get_lesson_vedio %}
                                 <li>
-                                <a target="_blank" href="{% url 'course:video_play' video.id %}" class="J-media-item studyvideo">{{ video.name }} ({{ video.learn_times }})
-                                    <i class="study-state"></i>
-                                </a>
-                            </li>
+                                    <a target="_blank" href="{% url 'course:video_play' video.id %}" class="J-media-item studyvideo">{{ video.name }} ({{ video.learn_times }})
+                                        <i class="study-state"></i>
+                                    </a>
+                                </li>
                             {% endfor %}
                         </ul>
                     </div>

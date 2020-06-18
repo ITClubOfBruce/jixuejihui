@@ -85,8 +85,13 @@ from .models import Video
 class VideoPlayView(View):
     def get(self,request,video_id):
         video = Video.objects.get(id=int(video_id))
+        course = video.lesson.course
+
+        all_resourses = CourseResource.objects.filter(course=course)
         context = {
-            'video':video
+            'video':video,
+            'course':course,
+            'all_resourses':all_resourses
         }
         return render(request,'course/course-play.html',context)
 
